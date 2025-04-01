@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { useTodos } from '../state/TodoContext';
 import TodoItem from './TodoItem';
-
+import { Dropdown } from 'primereact/dropdown';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import { Card } from 'primereact/card';
+import { Divider } from 'primereact/divider';
 const TodoList: React.FC = () => {
   const { 
     todos, 
@@ -52,9 +56,8 @@ const TodoList: React.FC = () => {
       console.error('Failed to delete todo:', error);
     }
   };
-
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+  const handleFilterChange = (e: { value: string }) => {
+    const value = e.value;
     if (value === 'all') {
       setFilter({});
     } else if (value === 'completed') {
@@ -64,44 +67,35 @@ const TodoList: React.FC = () => {
     }
   };
 
-  const handleRepositoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setRepositoryType(e.target.value as 'api' | 'localStorage');
+  const handleRepositoryChange = (e: { value: 'api' | 'localStorage' }) => {
+    setRepositoryType(e.value);
   };
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
     setFilter({ ...filter, searchTerm });
   };
-
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <h1>Todo List</h1>
+    <div className="container mx-auto p-4" style={{ maxWidth: '800px' }}>
+      <h1 className="text-3xl mb-4">Todo List</h1>
       
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between',
-        marginBottom: '20px'
-      }}>
-        <div>
-          <label htmlFor="repository-select">Data Source: </label>
-          <select
+      <div className="flex justify-content-between align-items-center mb-4">
+        <div className="flex align-items-center">
+          <label htmlFor="repository-select" className="mr-2">Data Source: </label>
+          <Dropdown
             id="repository-select"
             value={repositoryType}
+            options={[
+              { label: 'Local Storage', value: 'localStorage' },
+              { label: 'API', value: 'api' }
+            ]}
             onChange={handleRepositoryChange}
-            style={{ 
-              padding: '8px',
-              borderRadius: '4px',
-              border: '1px solid #ddd'
-            }}
-          >
-            <option value="localStorage">Local Storage</option>
-            <option value="api">API</option>
-          </select>
+            className="w-12rem"
+          />
         </div>
 
-        <div>
-          <label htmlFor="filter-select">Filter: </label>
-          <select
+        <div className="flex align-items-center">
+          <label htmlFor="filter-select" className="mr-2">Filter: </label>
+          <Dropdown
             id="filter-select"
             value={
               filter.completed === undefined
@@ -110,128 +104,82 @@ const TodoList: React.FC = () => {
                 ? 'completed'
                 : 'active'
             }
+            options={[
+              { label: 'All', value: 'all' },
+              { label: 'Active', value: 'active' },
+              { label: 'Completed', value: 'completed' }
+            ]}
             onChange={handleFilterChange}
-            style={{ 
-              padding: '8px',
-              borderRadius: '4px',
-              border: '1px solid #ddd'
-            }}
-          >
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="completed">Completed</option>
-          </select>
+            className="w-12rem"
+          />
         </div>
 
-        <div>
-          <input
-            type="text"
+        <div className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText
             placeholder="Search todos..."
             value={filter.searchTerm || ''}
             onChange={handleSearchChange}
-            style={{ 
-              padding: '8px',
-              borderRadius: '4px',
-              border: '1px solid #ddd',
-              width: '200px'
-            }}
+            className="w-full"
           />
         </div>
       </div>
-
-      <form
-        onSubmit={handleCreateTodo}
-        style={{ 
-          marginBottom: '20px',
-          padding: '15px',
-          backgroundColor: '#f5f5f5',
-          borderRadius: '4px'
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>Add New Todo</h2>
-        
-        <div style={{ marginBottom: '10px' }}>
-          <input
-            type="text"
-            placeholder="Title"
-            value={newTodo.title}
-            onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
-            style={{ 
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: '1px solid #ddd',
-              marginBottom: '10px'
-            }}
-            required
-          />
+      <Card className="mb-4">
+        <form onSubmit={handleCreateTodo}>
+          <h2 className="mt-0 mb-3">Add New Todo</h2>
           
-          <textarea
-            placeholder="Description (optional)"
-            value={newTodo.description}
-            onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
-            style={{ 
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: '1px solid #ddd',
-              minHeight: '80px'
-            }}
-          ></textarea>
-        </div>
-        
-        <button
-          type="submit"
-          style={{
-            background: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            padding: '10px 15px',
-            cursor: 'pointer',
-            fontWeight: 'bold'
-          }}
-        >
-          Add Todo
-        </button>
-      </form>
-
+          <div className="mb-3">
+            <InputText
+              className="w-full mb-2"
+              placeholder="Title"
+              value={newTodo.title}
+              onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
+              required
+            />
+            
+            <InputText
+              className="w-full"
+              placeholder="Description (optional)"
+              value={newTodo.description}
+              onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
+              style={{ minHeight: '80px' }}
+            />
+          </div>
+          
+          <Button
+            type="submit"
+            label="Add Todo"
+            icon="pi pi-plus"
+            severity="success"
+          />
+        </form>
+      </Card>
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '20px' }}>Loading...</div>
+        <div className="text-center p-4">Loading...</div>
       ) : error ? (
-        <div style={{ 
-          color: 'red', 
-          padding: '10px', 
-          border: '1px solid red',
-          borderRadius: '4px',
-          background: '#ffebee'
-        }}>
+        <Card className="bg-red-50 border-round border-1 border-red-500 text-red-700 mb-3">
           Error: {error}
-        </div>
+        </Card>
       ) : todos.length === 0 ? (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '20px',
-          color: '#888'
-        }}>
+        <Card className="text-center p-4 text-color-secondary mb-3">
           No todos found. Add one above!
-        </div>
+        </Card>
       ) : (
-        <div>
-          <h2>
-            {filter.completed === undefined
-              ? 'All Todos'
-              : filter.completed
-              ? 'Completed Todos'
-              : 'Active Todos'}
-            <span style={{ 
-              fontSize: '0.8rem',
-              color: '#888',
-              marginLeft: '10px'
-            }}>
+        <Card>
+          <div className="flex justify-content-between align-items-center mb-3">
+            <h2 className="m-0">
+              {filter.completed === undefined
+                ? 'All Todos'
+                : filter.completed
+                ? 'Completed Todos'
+                : 'Active Todos'}
+            </h2>
+            <span className="text-sm text-color-secondary ml-2">
               ({todos.length} item{todos.length === 1 ? '' : 's'})
             </span>
-          </h2>
+          </div>
+          
+          <Divider />
           
           {todos.map((todo) => (
             <TodoItem
@@ -241,7 +189,7 @@ const TodoList: React.FC = () => {
               onDelete={handleDeleteTodo}
             />
           ))}
-        </div>
+        </Card>
       )}
     </div>
   );

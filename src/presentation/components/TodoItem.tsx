@@ -1,5 +1,9 @@
 import React from 'react';
 import type { Todo } from '../../domain/entities/Todo';
+import { Button } from 'primereact/button';
+import { Card } from 'primereact/card';
+import { Badge } from 'primereact/badge';
+import { Tag } from 'primereact/tag';
 
 interface TodoItemProps {
   todo: Todo;
@@ -29,43 +33,50 @@ const TodoItem: React.FC<TodoItemProps> = ({
   };
 
   return (
-    <div className={`todo-item ${todo.completed ? 'completed' : ''}`}>
-      <div className="todo-content">
-        <div className="todo-header">
-          <h3 className="todo-title">{todo.title}</h3>
-          <div className="todo-date">
-            {todo.createdAt.toLocaleDateString()}
-          </div>
+    <Card className={`${todo.completed ? 'surface-200' : 'surface-0'}`}>
+      <div className="p-d-flex p-flex-column">
+        <div className="p-d-flex p-jc-between p-ai-center mb-3">
+          <h3 className="font-bold m-0">{todo.title}</h3>
+          <Tag value={todo.createdAt.toLocaleDateString()} severity="info" />
         </div>
         
         {todo.description && (
-          <p className="todo-description">{todo.description}</p>
+          <p className="mt-2 mb-3">{todo.description}</p>
         )}
         
-        <div className="todo-status">
-          Status: {todo.completed ? 'Completed' : 'Pending'}
+        <div className="mb-3">
+          <Badge 
+            value={todo.completed ? 'Completed' : 'Pending'} 
+            severity={todo.completed ? 'success' : 'warning'} 
+          />
         </div>
       </div>
       
-      <div className="todo-actions">
-        <button 
-          className={`toggle-btn ${todo.completed ? 'completed' : ''}`}
+      <div className="flex flex-wrap gap-2 justify-content-end mt-3">
+        <Button 
+          label={todo.completed ? 'Mark Incomplete' : 'Mark Complete'}
+          icon={todo.completed ? 'pi pi-times' : 'pi pi-check'}
+          className={todo.completed ? 'p-button-secondary' : 'p-button-success'}
           onClick={handleToggleComplete}
-        >
-          {todo.completed ? 'Mark Incomplete' : 'Mark Complete'}
-        </button>
+        />
         
         {onEdit && (
-          <button className="edit-btn" onClick={handleEdit}>
-            Edit
-          </button>
+          <Button 
+            label="Edit"
+            icon="pi pi-pencil"
+            className="p-button-primary"
+            onClick={handleEdit}
+          />
         )}
         
-        <button className="delete-btn" onClick={handleDelete}>
-          Delete
-        </button>
+        <Button 
+          label="Delete"
+          icon="pi pi-trash"
+          className="p-button-danger"
+          onClick={handleDelete}
+        />
       </div>
-    </div>
+    </Card>
   );
 };
 

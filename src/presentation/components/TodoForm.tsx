@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { Todo } from '../../domain/entities/Todo';
-
+import { InputText } from 'primereact/inputtext';
+import { Checkbox } from 'primereact/checkbox';
+import { Button } from 'primereact/button';
+import { Card } from 'primereact/card';
 interface TodoFormProps {
   onSubmit: (todo: Omit<Todo, 'id' | 'createdAt'>) => void;
   initialValues?: Todo;
@@ -44,37 +47,34 @@ const TodoForm = ({ onSubmit, initialValues, isEditing = false }: TodoFormProps)
   };
 
   return (
-    <form onSubmit={handleSubmit} className="todo-form">
-      <h2>{isEditing ? 'Edit Todo' : 'Add New Todo'}</h2>
-      
-      <div className="form-group">
-        <label htmlFor="title">Title:</label>
-        <input
-          type="text"
-          id="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="What needs to be done?"
-          required
-        />
-      </div>
-      
-      <div className="form-group">
-        <label htmlFor="completed">
-          <input
-            type="checkbox"
-            id="completed"
-            checked={completed}
-            onChange={(e) => setCompleted(e.target.checked)}
+    <Card className="p-3">
+      <form onSubmit={handleSubmit} className="p-fluid">
+        <h2 className="text-xl mb-4">{isEditing ? 'Edit Todo' : 'Add New Todo'}</h2>
+        
+        <div className="field mb-4">
+          <label htmlFor="title" className="block mb-2">Title:</label>
+          <InputText
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="What needs to be done?"
+            required
+            className="w-full"
           />
-          Completed
-        </label>
-      </div>
-      
-      <button type="submit" className="btn-submit">
-        {isEditing ? 'Update' : 'Add'} Todo
-      </button>
-    </form>
+        </div>
+        
+        <div className="field-checkbox mb-4">
+          <Checkbox
+            inputId="completed"
+            checked={completed}
+            onChange={(e) => setCompleted(e.checked)}
+          />
+          <label htmlFor="completed" className="ml-2">Completed</label>
+        </div>
+        
+        <Button type="submit" label={`${isEditing ? 'Update' : 'Add'} Todo`} className="w-full" />
+      </form>
+    </Card>
   );
 };
 
