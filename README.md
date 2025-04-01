@@ -1,54 +1,86 @@
-# React + TypeScript + Vite
+# Clean Architecture React Todo App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application built using Clean Architecture principles and PrimeReact components.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Built with React, TypeScript, and Vite
+- Implements Clean Architecture principles for separation of concerns
+- Uses PrimeReact component library for UI
+- Responsive design with PrimeFlex
+- Local storage for data persistence
 
-## Expanding the ESLint configuration
+## Architecture
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+This project follows Clean Architecture principles, separating the codebase into layers:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **Domain**: Core business logic and entities
+- **Use Cases**: Application-specific business rules
+- **Interfaces/Adapters**: Adapters between use cases and infrastructure
+- **Presentation**: UI components and state management
+
+## UI Components
+
+The app uses [PrimeReact](https://primereact.org/) for its UI components, offering a consistent and professional look and feel.
+
+## Common Issues and Solutions
+
+### CSS Conflicts
+
+When integrating PrimeReact with an existing project, you might encounter styling conflicts between default CSS files and PrimeReact's styling system.
+
+**Problem**: Conflicting styles in `index.css` and `App.css` can cause UI components to look inconsistent or break the layout.
+
+**Solution**:
+1. Simplify global CSS files to contain only the essential styles
+2. Remove custom styling for elements that are replaced by PrimeReact components
+3. Use PrimeFlex classes for layout instead of custom CSS
+4. Ensure proper import order of CSS files in the main entry point
+
+Example of simplified `index.css`:
+```css
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  
+  /* Keep text rendering properties */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Basic document reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  width: 100%;
+}
+
+body {
+  /* Allow proper layout flow for PrimeReact components */
+  display: block;
+}
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Setup
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
 ```
+
+## Additional Resources
+
+- [PrimeReact Documentation](https://primereact.org/documentation/)
+- [Clean Architecture by Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
